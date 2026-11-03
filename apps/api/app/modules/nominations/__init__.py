@@ -1,0 +1,1 @@
+"""Nominations and consent logic."""

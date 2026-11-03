@@ -1,0 +1,15 @@
+{
+  "name": "voting-platform",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace @voting/web",
+    "typecheck": "npm run typecheck --workspace @voting/web",
+    "build": "npm run build --workspace @voting/web"
+  }
+}
