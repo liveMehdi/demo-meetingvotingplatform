@@ -17,7 +17,9 @@ FROM python:3.12-slim-bookworm AS runtime
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 \
     PATH="/app/api/.venv/bin:$PATH" WEB_DIST_DIR=/app/web APP_ENV=production
 WORKDIR /app/api
-RUN groupadd --gid 10001 voting && useradd --uid 10001 --gid voting --no-create-home voting
+RUN groupadd --gid 10001 voting \
+    && useradd --uid 10001 --gid voting --create-home --shell /bin/sh voting \
+    && install -d -m 0700 -o voting -g voting /home/voting/.ssh
 COPY --from=api-build /app/api/.venv ./.venv
 COPY apps/api/app ./app
 COPY apps/api/migrations ./migrations
