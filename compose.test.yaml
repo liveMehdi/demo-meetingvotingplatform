@@ -1,0 +1,17 @@
+# Using a temporary database and login details for local tests only
+services:
+  test-postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: voting_test
+      POSTGRES_PASSWORD: voting_test
+      POSTGRES_DB: voting_test
+    ports:
+      - "127.0.0.1:55432:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U voting_test -d voting_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 20

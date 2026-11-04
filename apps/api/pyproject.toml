@@ -16,10 +16,23 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ruff>=0.17,<1"]
+dev = [
+    "httpx>=0.28,<1",
+    "pytest>=8,<10",
+    "pytest-asyncio>=1,<2",
+    "ruff>=0.17,<1",
+]
 
 [tool.uv]
 package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "--strict-markers -ra"
+markers = ["integration: requires an explicitly configured PostgreSQL test database"]
 
 [tool.ruff]
 target-version = "py312"

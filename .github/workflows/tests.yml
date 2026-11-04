@@ -1,0 +1,55 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  api-tests:
+    name: Backend, components and browser journeys
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: voting_test
+          POSTGRES_PASSWORD: voting_test
+          POSTGRES_DB: voting_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U voting_test -d voting_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+asyncpg://voting_test:voting_test@127.0.0.1:5432/voting_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: python -m pip install uv==0.13.6
+      - run: uv sync --project apps/api --locked
+      - run: uv run --project apps/api --locked ruff check apps/api/app apps/api/migrations apps/api/tests
+      - run: uv run --project apps/api --locked pytest -c apps/api/pyproject.toml apps/api/tests
+      - run: npm ci
+      - run: npm run typecheck:tests
+      - run: npm run test:web
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-failure-traces
+          path: apps/web/test-results/
+          retention-days: 7

@@ -8,8 +8,13 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "test": "uv run --project apps/api --locked pytest -c apps/api/pyproject.toml apps/api/tests",
+    "test:unit": "npm test -- -m \"not integration\"",
     "dev": "npm run dev --workspace @voting/web",
     "typecheck": "npm run typecheck --workspace @voting/web",
-    "build": "npm run build --workspace @voting/web"
+    "build": "npm run build --workspace @voting/web",
+    "test:web": "npm run test --workspace @voting/web",
+    "test:e2e": "npm run test:e2e --workspace @voting/web",
+    "typecheck:tests": "npm run typecheck:tests --workspace @voting/web"
   }
 }
