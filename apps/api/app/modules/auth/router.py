@@ -17,6 +17,19 @@ from app.modules.auth.service import EmailAlreadyRegistered, register_account
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
+@router.get("/demo")
+async def demo_account(request: Request):
+    settings = request.app.state.settings
+    if settings.demo_admin_email is None or settings.demo_admin_password is None:
+        return None
+
+    # sharing only the dedicated demo login when it has been enabled
+    return {
+        "email": settings.demo_admin_email,
+        "password": settings.demo_admin_password.get_secret_value(),
+    }
+
+
 @router.post("/reset-password", status_code=204, response_class=Response)
 async def reset_password(
     data: ResetPasswordRequest, session: Annotated[AsyncSession, Depends(get_session)]

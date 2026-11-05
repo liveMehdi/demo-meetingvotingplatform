@@ -27,6 +27,24 @@ const test = base.extend<{ officerApi: APIRequestContext }>({
   },
 });
 
+test("demo admin signs in and keeps its account access protected", async ({ page }) => {
+  await page.goto("/login");
+
+  await page.getByRole("button", { name: "Use demo admin account" }).click();
+
+  await expect(page.getByLabel("Email")).toHaveValue("tyrone@example.org");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+
+  await expect(page).not.toHaveURL(/\/login/);
+
+  await page.goto("/members?q=tyrone%40example.org");
+
+  await expect(page.getByText(/password and account security settings are protected/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Revoke membership" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Remove officer access" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Suspend account" })).toHaveCount(0);
+});
+
 async function signIn(page: Page, role: "officer" | "member") {
   await page.goto("/login");
   const name = role === "officer" ? "shan" : "jonny";

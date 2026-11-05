@@ -27,6 +27,16 @@ export type CurrentUser = z.infer<typeof currentUserSchema>;
 
 export const currentUserKey = ["auth", "me"] as const;
 
+const demoAccountSchema = z.object({ email: z.string().email(), password: z.string() }).nullable();
+
+export async function getDemoAccount(signal: AbortSignal) {
+  const response = await apiRequest("/api/auth/demo", { signal });
+
+  if (!response.ok) throw new Error("Demo access is unavailable.");
+
+  return readResponse(response, demoAccountSchema, "Demo access could not be loaded.");
+}
+
 async function readCurrentUser(response: Response): Promise<CurrentUser> {
   return readResponse(
     response,

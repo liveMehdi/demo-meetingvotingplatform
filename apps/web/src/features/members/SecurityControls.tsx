@@ -85,6 +85,12 @@ export function SecurityControls({ member }: { member: Member }) {
       change.reset();
     },
   });
+  if (member.is_demo_account) {
+    return <p className="mt-5 supporting-copy">
+      Shared demo admin — password and account security settings are protected.
+    </p>;
+  }
+
   return (
     <details className="mt-5 border-t pt-4">
       <summary className="cursor-pointer text-sm">

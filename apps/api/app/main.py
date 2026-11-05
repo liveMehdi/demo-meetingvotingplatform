@@ -20,6 +20,7 @@ from app.db.creation_requests import CreationConflict
 from app.db.readiness import schema_is_current
 from app.db.session import build_engine, get_session
 from app.modules.audit.router import router as audit_router
+from app.modules.auth.demo import DemoAccountProtected
 from app.modules.auth.router import router as auth_router
 from app.modules.ballots.followup_router import router as followup_router
 from app.modules.ballots.member_router import router as member_ballots_router
@@ -72,6 +73,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.poll_notifications = PollNotifications()
     app.state.request_limiter = RequestLimiter()
 
+    @app.exception_handler(DemoAccountProtected)
+    async def demo_account_protected(_request, exc):
+        return JSONResponse(status_code=403, content={"detail": str(exc)})
+
     @app.middleware("http")
     async def prevent_private_caching(request, call_next):
         retry_after = (
@@ -83,7 +88,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
 
         if retry_after:
-
             return JSONResponse(
                 status_code=429,
                 content={"detail": "Too many attempts. Wait before trying again."},

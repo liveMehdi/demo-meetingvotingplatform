@@ -110,11 +110,11 @@ export function MembersPage() {
                       Approve membership
                     </button>
                     <button type="button" className={buttonClass}
-                      disabled={mutation.isPending || review !== null || member.membership_status === null || member.membership_status === "revoked"}
+                      disabled={member.is_demo_account || mutation.isPending || review !== null || member.membership_status === null || member.membership_status === "revoked"}
                       onClick={() => setReview({ input: { kind: "membership", id: member.id, status: "revoked" }, email: member.email })}>
                       Revoke membership
                     </button>
-                    <button type="button" className={buttonClass} disabled={mutation.isPending || review !== null}
+                    <button type="button" className={buttonClass} disabled={(member.is_demo_account && member.is_officer) || mutation.isPending || review !== null}
                       onClick={() => member.is_officer ? setReview({ input: { kind: "officer", id: member.id, isOfficer: false }, email: member.email }) : change({ kind: "officer", id: member.id, isOfficer: true })}>
                       {member.is_officer ? "Remove officer access" : "Grant officer access"}
                     </button>

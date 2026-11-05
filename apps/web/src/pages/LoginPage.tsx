@@ -1,9 +1,9 @@
 import { inputClass } from "@/components/ui/control-styles";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { currentUserKey, loginAccount } from "@/features/auth/api";
+import { currentUserKey, getDemoAccount, loginAccount } from "@/features/auth/api";
 
 import { safeReturnTo } from "@/lib/navigation";
 
@@ -15,6 +15,12 @@ export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
+  const demo = useQuery({
+    queryKey: ["auth", "demo"],
+    queryFn: ({ signal }) => getDemoAccount(signal),
+    retry: false,
+    gcTime: 0,
+  });
   const login = useMutation({
     mutationFn: loginAccount,
     retry: false,
@@ -51,6 +57,30 @@ export function LoginPage() {
           <CardTitle>Sign in</CardTitle>
         </CardHeader>
         <CardContent>
+          {demo.data && (
+            <section aria-label="Demo access" className="mb-6 surface-inset space-y-3">
+              <h2 className="font-medium">Try the demo</h2>
+              <p className="supporting-copy">
+                Explore with a shared admin account. Changes are visible to other visitors.
+              </p>
+              <p className="break-all text-sm">Email: {demo.data.email}</p>
+              <p className="text-sm">Password: <code>{demo.data.password}</code></p>
+              <button
+                type="button"
+                className="ui-button"
+                disabled={login.isPending}
+                onClick={() => {
+                  if (!demo.data) return;
+                  setEmail(demo.data.email);
+                  setPassword(demo.data.password);
+                  setFeedback(null);
+                }}
+              >
+                Use demo admin account
+              </button>
+              <p className="supporting-copy">Then select Sign in below.</p>
+            </section>
+          )}
           <form onSubmit={submit} className="space-y-5" aria-busy={login.isPending}>
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-medium">Email</label>

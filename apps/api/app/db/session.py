@@ -18,8 +18,7 @@ async def get_session(request: Request) -> AsyncIterator[AsyncSession]:
     """Giving each request a database session, services handle transactions."""
     factory = request.app.state.session_factory
     if factory is None:
-        raise HTTPException(
-            status_code=503, detail="Service unavailable. Contact admin."
-        )
+        raise HTTPException(status_code=503, detail="Service unavailable. Contact admin.")
     async with factory() as session:
+        session.info["demo_admin_email"] = request.app.state.settings.demo_admin_email
         yield session

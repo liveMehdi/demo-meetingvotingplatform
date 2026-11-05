@@ -11,6 +11,7 @@ from starlette.concurrency import run_in_threadpool
 from app.db.electorate_lock import lock_electorate
 from app.modules.audit.models import AuditAction
 from app.modules.audit.service import record
+from app.modules.auth.demo import is_demo_account, protect_demo_account
 from app.modules.auth.models import PasswordReset, Session, User
 from app.modules.auth.service import password_hasher, session_digest
 from app.modules.members.models import Membership
@@ -30,6 +31,7 @@ async def manage_account(
 
         await lock_electorate(session)
         user = await lock_target_for_admin(session, actor_id, target_id)
+        protect_demo_account(session, user)
         if user.security_revision != data.expected_revision:
             raise SecurityConflict("Account controls changed. Refresh before trying again.")
 
@@ -90,7 +92,7 @@ async def manage_account(
             
         )
         return {
-            "member": member_response(user, status),
+            "member": member_response(user, status, demo=is_demo_account(session, user)),
             "reset_code": token,
             "expires_at": expires_at,
         }
@@ -127,6 +129,9 @@ async def reset_password(session: AsyncSession, code: str, password: str):
 
         if reset is None or user is None or user.is_suspended:
             raise SecurityConflict("The recovery code is invalid or expired.")
+
+        # blocking older recovery codes too, even if they predate demo protection
+        protect_demo_account(session, user)
         
         user.password_hash = hashed
         user.security_revision += 1

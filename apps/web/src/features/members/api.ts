@@ -4,6 +4,7 @@ import { currentUserSchema } from "@/features/auth/api";
 import { apiRequest, blockedRequestMessage } from "@/lib/api";
 
 export const memberSchema = currentUserSchema.extend({
+  is_demo_account: z.boolean().default(false),
   created_at: z.string(),
   is_suspended: z.boolean(),
   security_revision: z.number(),
@@ -41,12 +42,12 @@ async function checkResponse(response: Response): Promise<void> {
 
   if (response.status === 403) {
 
-    const csrfBlocked =
-      (await readErrorDetail(response)) === "Request blocked. Refresh the page and try again.";
+    const detail = await readErrorDetail(response);
+    const csrfBlocked = detail === "Request blocked. Refresh the page and try again.";
 
     throw new MemberRequestError(
 
-      csrfBlocked ? blockedRequestMessage : "Administrator access is required.",
+      csrfBlocked ? blockedRequestMessage : (detail ?? "Administrator access is required."),
       403,
     );
   }

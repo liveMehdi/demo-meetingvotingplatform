@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.electorate_lock import lock_electorate
 from app.modules.audit.models import AuditAction
 from app.modules.audit.service import record
+from app.modules.auth.demo import is_demo_account, protect_demo_account
 from app.modules.auth.models import User
 from app.modules.members.models import Membership, MembershipStatus
 from app.modules.members.schemas import MemberResponse, MembershipUpdate, MembersPage, OfficerUpdate
@@ -19,8 +20,11 @@ class MemberNotFound(Exception):
     pass
 
 
-def member_response(user: User, status: MembershipStatus | None) -> MemberResponse:
+def member_response(
+    user: User, status: MembershipStatus | None, *, demo: bool = False
+) -> MemberResponse:
     return MemberResponse(
+        is_demo_account=demo,
         id=user.id,
         email=user.email,
         is_admin=user.is_admin,
@@ -71,7 +75,10 @@ async def list_members(
         ).all()
 
         return MembersPage(
-            items=[member_response(user, status) for user, status in rows],
+            items=[
+                member_response(user, status, demo=is_demo_account(session, user))
+                for user, status in rows
+            ],
             total=total,
             offset=offset,
             limit=limit,
@@ -111,6 +118,8 @@ async def update_membership(
         await lock_electorate(session)
 
         user = await lock_target_for_admin(session, actor_id, target_id)
+        if change.status == "revoked":
+            protect_demo_account(session, user)
         
         membership = await session.scalar(
             select(Membership).where(Membership.user_id == target_id).with_for_update()
@@ -130,7 +139,7 @@ async def update_membership(
                 target_id,
             )
 
-        result = member_response(user, membership.status)
+        result = member_response(user, membership.status, demo=is_demo_account(session, user))
 
     return result
 
@@ -142,6 +151,9 @@ async def update_officer(
         # keeping role changes from clashing with ballot opening, since both lock user records
         await lock_electorate(session)
         user = await lock_target_for_admin(session, actor_id, target_id)
+
+        if not change.is_officer:
+            protect_demo_account(session, user)
 
         if user.is_officer != change.is_officer:
             user.is_officer = change.is_officer
@@ -155,6 +167,6 @@ async def update_officer(
         status = await session.scalar(
             select(Membership.status).where(Membership.user_id == target_id)
         )
-        result = member_response(user, status)
+        result = member_response(user, status, demo=is_demo_account(session, user))
 
     return result

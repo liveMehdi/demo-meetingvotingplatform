@@ -8,6 +8,7 @@ from app.modules.members.models import MembershipStatus
 
 
 class MemberResponse(BaseModel):
+    is_demo_account: bool = False
     id: UUID
     email: str
     is_admin: bool

@@ -21,11 +21,12 @@ async def main():
         password = password_hasher.hash("purpleblue4112")
 
         async with factory() as session, session.begin():
-            for role, name in (("officer", "shan"), ("member", "jonny")):
+            for role, name in (("officer", "shan"), ("member", "jonny"), ("admin", "tyrone")):
                 user = User(
                     email=f"{name}@example.org",
                     password_hash=password,
-                    is_officer=role == "officer",
+                    is_officer=role in {"officer", "admin"},
+                    is_admin=role == "admin",
                 )
 
                 session.add(user)
@@ -41,6 +42,8 @@ async def main():
                 app_env="development",
                 web_dist_dir=None,
                 allowed_origins=["http://127.0.0.1:5174"],
+                demo_admin_email="tyrone@example.org",
+                demo_admin_password="purpleblue4112",
             )
         )
 

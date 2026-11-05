@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import Field, PostgresDsn, field_validator, model_validator
+from pydantic import EmailStr, Field, PostgresDsn, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 API_ROOT = Path(__file__).resolve().parents[2]
@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     app_env: Literal["development", "production"] = "development"
     # optional
     web_dist_dir: Path | None = None
+    demo_admin_email: EmailStr | None = None
+    demo_admin_password: SecretStr | None = Field(default=None, min_length=1, max_length=128)
     allowed_origins: list[str] = [
         "http://127.0.0.1:5173",
         "http://localhost:5173",
@@ -29,6 +31,17 @@ class Settings(BaseSettings):
     ]
     session_ttl_seconds: int = Field(default=8 * 60 * 60, ge=60, le=7 * 24 * 60 * 60)
     guest_session_ttl_seconds: int = Field(default=8 * 60 * 60, ge=60, le=24 * 60 * 60)
+
+    @field_validator("demo_admin_email")
+    @classmethod
+    def normalize_demo_email(cls, email: str | None) -> str | None:
+        return email.lower() if email else None
+
+    @model_validator(mode="after")
+    def require_demo_email(self):
+        if self.demo_admin_password is not None and self.demo_admin_email is None:
+            raise ValueError("DEMO_ADMIN_EMAIL is required when demo login is enabled")
+        return self
 
     @field_validator("allowed_origins")
     @classmethod
@@ -48,9 +61,7 @@ class Settings(BaseSettings):
                 or "*" in origin
                 or origin != origin.strip()
             ):
-                raise ValueError(
-                    "ALLOWED_ORIGINS needs HTTP/s origins without paths or wildcards."
-                )
+                raise ValueError("ALLOWED_ORIGINS needs HTTP/s origins without paths or wildcards.")
 
             _ = parsed.port
         return origins
