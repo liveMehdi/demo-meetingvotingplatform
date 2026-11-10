@@ -3,7 +3,8 @@ import { Link } from "react-router";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Icon } from "@/components/ui/Icon";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { getDemoAccount, type CurrentUser } from "@/features/auth/api";
+import type { CurrentUser } from "@/features/auth/api";
+import { useDemoAccount } from "@/features/auth/use-demo-account";
 import { useAccount } from "@/features/auth/use-account";
 import { getMyBallots } from "@/features/ballots/member-api";
 import {
@@ -325,12 +326,7 @@ function MemberOverview({ user }: { user: CurrentUser }) {
 }
 
 function DemoAccess() {
-  const demo = useQuery({
-    queryKey: ["auth", "demo"],
-    queryFn: ({ signal }) => getDemoAccount(signal),
-    retry: false,
-    gcTime: 0,
-  });
+  const demo = useDemoAccount();
 
   if (!demo.data) return null;
 

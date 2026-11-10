@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router";
-import { apiRequest } from "@/lib/api";
+import { resetPassword } from "@/features/auth/api";
 import {
   inputClass,
   actionButtonClass as button,
@@ -18,17 +18,7 @@ export function ResetPasswordPage() {
     setPending(true);
     setError("");
     try {
-      const response = await apiRequest("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: code.trim(), password }),
-      });
-      if (!response.ok)
-        throw new Error(
-          response.status === 400
-            ? "This code is invalid or expired. Ask an admin for a new one."
-            : "The reset could not be confirmed. Try signing in with the new password before requesting another code.",
-        );
+      await resetPassword({ code: code.trim(), password });
       setCode("");
       setDone(true);
     } catch (failure) {
@@ -85,9 +75,7 @@ export function ResetPasswordPage() {
               disabled={pending}
             />
           </label>
-          <p className="supporting-copy">
-            Use at least 12 characters.
-          </p>
+          <p className="supporting-copy">Use at least 12 characters.</p>
           <button
             className={`${button} ui-button-primary w-full`}
             disabled={pending}

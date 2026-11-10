@@ -42,7 +42,6 @@ const MembersPage = lazy(() =>
   })),
 );
 
-
 const MeetingsPage = lazy(() =>
   import("@/pages/MeetingsPage").then((module) => ({
     default: module.MeetingsPage,
@@ -130,7 +129,7 @@ const router = createBrowserRouter(
         <Route path="/" element={<HomePage />} />
         <Route path="/status" element={<HealthPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        
+
         <Route path="/login" element={<LoginPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route element={<RequireAccount />}>

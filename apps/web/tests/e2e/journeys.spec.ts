@@ -188,6 +188,36 @@ test("officer creates, opens, closes and publishes a ballot through the interfac
   ).toContainText("No votes were cast.");
 });
 
+test("officer creates, edits, opens and closes a poll through the interface", async ({
+  page,
+  officerApi,
+}) => {
+  const m = await meeting(officerApi, "Poll management journey");
+
+  await signIn(page, "officer");
+  await page.goto(`/meetings/${m.id}?section=polls`);
+  await page.getByRole("button", { name: "Create live poll" }).click();
+  await page.getByLabel("Question", { exact: true }).fill("Choose a refreshment");
+  await page.getByLabel(/Options.*one per line/).fill("Tea\nCoffee");
+  await page.getByRole("button", { name: "Create poll draft", exact: true }).click();
+
+  await expect(page.getByText("Poll draft saved.", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Edit poll draft" }).click();
+  await expect(page.getByLabel("Question", { exact: true })).toHaveValue("Choose a refreshment");
+  await page.getByLabel("Question", { exact: true }).fill("Which drink would you like?");
+  await page.getByRole("button", { name: "Save poll draft" }).click();
+
+  await expect(page.getByRole("heading", { name: "Which drink would you like?" })).toBeVisible();
+  await page.getByRole("button", { name: "Open poll", exact: true }).click();
+  await page.getByRole("button", { name: "Confirm opening" }).click();
+
+  await expect(page.getByText("Poll open", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Close poll", exact: true }).click();
+  await page.getByRole("button", { name: "Confirm closure" }).click();
+
+  await expect(page.getByText("Poll closed", { exact: true })).toBeVisible();
+});
+
 test("guest joins using the QR link, answers a poll and updates live projector totals", async ({
   page,
   browser,

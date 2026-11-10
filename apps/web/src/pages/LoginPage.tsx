@@ -1,15 +1,12 @@
 import { inputClass } from "@/components/ui/control-styles";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import {
-  currentUserKey,
-  getDemoAccount,
-  loginAccount,
-} from "@/features/auth/api";
+import { currentUserKey, loginAccount } from "@/features/auth/api";
 
 import { safeReturnTo } from "@/lib/navigation";
+import { useDemoAccount } from "@/features/auth/use-demo-account";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -19,12 +16,7 @@ export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
-  const demo = useQuery({
-    queryKey: ["auth", "demo"],
-    queryFn: ({ signal }) => getDemoAccount(signal),
-    retry: false,
-    gcTime: 0,
-  });
+  const demo = useDemoAccount();
   const login = useMutation({
     mutationFn: loginAccount,
     retry: false,

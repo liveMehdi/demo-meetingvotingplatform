@@ -27,14 +27,20 @@ export type CurrentUser = z.infer<typeof currentUserSchema>;
 
 export const currentUserKey = ["auth", "me"] as const;
 
-const demoAccountSchema = z.object({ email: z.string().email(), password: z.string() }).nullable();
+const demoAccountSchema = z
+  .object({ email: z.string().email(), password: z.string() })
+  .nullable();
 
 export async function getDemoAccount(signal: AbortSignal) {
   const response = await apiRequest("/api/auth/demo", { signal });
 
   if (!response.ok) throw new Error("Demo access is unavailable.");
 
-  return readResponse(response, demoAccountSchema, "Demo access could not be loaded.");
+  return readResponse(
+    response,
+    demoAccountSchema,
+    "Demo access could not be loaded.",
+  );
 }
 
 async function readCurrentUser(response: Response): Promise<CurrentUser> {
@@ -87,6 +93,25 @@ export async function logoutAccount(): Promise<void> {
 
   if (response.status !== 204) {
     throw new Error("Sign-out could not be confirmed. Please try again.");
+  }
+}
+
+export async function resetPassword(input: {
+  code: string;
+  password: string;
+}): Promise<void> {
+  const response = await apiRequest("/api/auth/reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      response.status === 400
+        ? "This code is invalid or expired. Ask an admin for a new one."
+        : "The reset could not be confirmed. Try signing in with the new password before requesting another code.",
+    );
   }
 }
 

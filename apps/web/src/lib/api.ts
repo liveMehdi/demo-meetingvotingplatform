@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-const errorReferenceSchema = z.object({ reference: z.string().regex(/^[a-f0-9]{32}$/) });
+const errorReferenceSchema = z.object({
+  reference: z.string().regex(/^[a-f0-9]{32}$/),
+});
 
 export const blockedRequestMessage =
   "This request was blocked. Check the page address and reload before trying again.";
@@ -14,6 +16,16 @@ export class ApiRequestError extends Error {
   }
 }
 
+export class RequestConnectionError extends Error {
+  constructor(public readonly kind: "timeout" | "network") {
+    super(
+      kind === "timeout"
+        ? "The server took too long to respond. We couldn't confirm whether that worked."
+        : "Connection lost. Check your connection. We couldn't confirm whether that worked.",
+    );
+  }
+}
+
 export async function apiRequest(
   path: string,
   options: RequestInit = {},
@@ -22,6 +34,12 @@ export async function apiRequest(
   if (!headers.has("Accept")) headers.set("Accept", "application/json");
   if (options.method && options.method !== "GET")
     headers.set("X-CSRF-Protection", "1");
+
+  const timeout = AbortSignal.timeout(10000);
+  const signal = options.signal
+    ? AbortSignal.any([options.signal, timeout])
+    : timeout;
+
   let response: Response;
   try {
     response = await fetch(path, {
@@ -29,17 +47,20 @@ export async function apiRequest(
       headers,
       credentials: "same-origin",
       cache: "no-store",
-      signal: options.signal
-        ? AbortSignal.any([options.signal, AbortSignal.timeout(10000)])
-        : AbortSignal.timeout(10000),
+      signal,
     });
   } catch {
-    throw new Error(
+    if (signal.aborted) {
+      if (signal.reason?.name === "TimeoutError") {
+        throw new RequestConnectionError("timeout");
+      }
 
-      "We couldn't confirm whether that worked. Check your connection and try again.",
-    );
+      throw signal.reason;
+    }
+
+    throw new RequestConnectionError("network");
   }
-  
+
   if (response.status === 429) {
     const seconds = Number(response.headers.get("Retry-After"));
     throw new ApiRequestError(
@@ -60,7 +81,6 @@ export async function apiRequest(
         `Something went wrong. Refresh to check whether it worked. If the problem continues, give an admin this reference: ${reference}.`,
         500,
       );
-      
   }
   return response;
 }

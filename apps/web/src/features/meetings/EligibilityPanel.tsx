@@ -35,7 +35,6 @@ export function EligibilityPanel({ meeting }: { meeting: Meeting }) {
       setDraft(null);
       await client.invalidateQueries({ queryKey: ["meeting", meeting.id] });
     },
-
   });
 
   return (
@@ -61,7 +60,6 @@ export function EligibilityPanel({ meeting }: { meeting: Meeting }) {
               mutation.mutate(draft);
             }
           }}
-
         >
           <label
             htmlFor="eligibility-policy"
@@ -81,7 +79,6 @@ export function EligibilityPanel({ meeting }: { meeting: Meeting }) {
               })
             }
           >
-            
             <option value="all_approved">
               {eligibilityLabels.all_approved}
             </option>

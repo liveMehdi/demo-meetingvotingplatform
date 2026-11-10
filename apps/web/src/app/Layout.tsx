@@ -58,7 +58,6 @@ export function AppLayout() {
     retry: false,
     networkMode: "always",
     async onSuccess() {
-      
       unsaved.clear();
       await client.cancelQueries();
       client.clear();
@@ -195,8 +194,8 @@ export function AppLayout() {
       </div>
       <footer className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-xs text-muted-foreground">
         <span>
-          Elections Portal Demo <span aria-hidden="true">·</span> Member voting &amp;
-          live polls
+          Elections Portal Demo <span aria-hidden="true">·</span> Member voting
+          &amp; live polls
         </span>
         <Link to="/status" className="hover:text-foreground">
           Service status

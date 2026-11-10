@@ -5,7 +5,9 @@ export function useCreationAttempt<T>() {
   const attempt = useRef(new CreationAttempt<T>());
   const [, render] = useState(0);
   return {
-    retryInput: attempt.current.retryInput,
+    get retryInput() {
+      return attempt.current.retryInput;
+    },
     reset() {
       attempt.current.reset();
       render((n) => n + 1);
