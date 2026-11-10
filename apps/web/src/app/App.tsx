@@ -99,8 +99,8 @@ const router = createBrowserRouter(
         <main className="page-shell page-narrow">
           <h1 className="page-title">This page could not be loaded</h1>
           <p className="page-intro">
-            Check your connection, then reload. If a creation was unconfirmed,
-            check the saved list before creating it again.
+            Check your connection, then reload. If you were creating something,
+            check whether it saved before creating it again.
           </p>
 
           <button

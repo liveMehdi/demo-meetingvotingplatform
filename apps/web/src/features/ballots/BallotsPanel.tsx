@@ -99,7 +99,7 @@ function DraftForm({
           labels.some((label) => !label || label.length > 200)))
     ) {
       setError(
-        "Enter a question and, for an election, 2–50 nonempty options (up to 200 characters each).",
+        "Enter a question and for an election, 2–50 nonempty options (up to 200 characters each).",
       );
       return;
     }
@@ -356,7 +356,7 @@ export function BallotsPanel({ meeting }: { meeting: Meeting }) {
 
     async onError(error) {
       setFailure(
-        `${error.message} Your input is retained. Retry an uncertain creation below; cancel editing to reload a changed draft.`,
+        `${error.message} Your entries are still here. If you're unsure whether the new ballot saved, retry below. If the draft has changed, cancel editing to load the latest version.`,
       );
       await client.invalidateQueries({ queryKey: ["ballots", meetingId] });
     },

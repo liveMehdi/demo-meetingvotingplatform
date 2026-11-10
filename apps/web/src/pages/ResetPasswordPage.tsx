@@ -86,7 +86,7 @@ export function ResetPasswordPage() {
             />
           </label>
           <p className="supporting-copy">
-            Use 12–128 characters for your new password.
+            Use at least 12 characters.
           </p>
           <button
             className={`${button} ui-button-primary w-full`}

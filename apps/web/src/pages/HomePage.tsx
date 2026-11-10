@@ -73,7 +73,7 @@ function ReadyBallots({ userId }: { userId: string }) {
       ) : ballots.data.total === 0 ? (
         <EmptyState
           title="No votes waiting for you"
-          description="You can still check your submissions and published results."
+          description="View your votes and published results."
           action={
             <Link to="/ballots?view=results" className="back-link">
               View results

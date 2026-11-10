@@ -66,7 +66,7 @@ export function PublicationControl({
           </p>
           <p className="mt-2 text-sm">
             Results will be visible to eligible members and officers.
-            Publication cannot be undone. Quorum is not configured.
+            Publication cannot be undone.
           </p>
           <div className="mt-3 action-row">
             <button

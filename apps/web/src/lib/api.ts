@@ -36,7 +36,7 @@ export async function apiRequest(
   } catch {
     throw new Error(
 
-      "The request could not be confirmed. Check your connection and try again.",
+      "We couldn't confirm whether that worked. Check your connection and try again.",
     );
   }
   
@@ -57,7 +57,7 @@ export async function apiRequest(
     const reference = parsed.success ? parsed.data.reference : null;
     if (reference)
       throw new ApiRequestError(
-        `The request could not be completed. Refresh to check its outcome. If it continues, give an administrator this reference: ${reference}.`,
+        `Something went wrong. Refresh to check whether it worked. If the problem continues, give an admin this reference: ${reference}.`,
         500,
       );
       

@@ -147,7 +147,7 @@ export function LoginPage() {
             </button>
           </form>
           <Link to="/reset-password" className="mt-5 block text-sm underline">
-            Need help recovering your account?
+            Forgot your password?
           </Link>
           <Link
             to={`/register?returnTo=${encodeURIComponent(destination)}`}

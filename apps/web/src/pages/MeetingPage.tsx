@@ -44,7 +44,7 @@ const sections = [
   {
     id: "settings",
     label: "Settings",
-    description: "Meeting lifecycle, details and eligibility",
+    description: "Meeting status, details and who can vote",
   },
 ] as const;
 

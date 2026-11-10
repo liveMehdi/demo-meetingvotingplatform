@@ -80,7 +80,7 @@ export function MeetingsPage() {
     },
     async onError(error) {
       setFeedback(
-        `${error.message} Your input is retained. If the result is uncertain, retry the original creation below.`,
+        `${error.message} Your entries are still here. If you're unsure whether the meeting saved, retry below.`,
       );
       await client.invalidateQueries({ queryKey: ["meetings"] });
     },

@@ -194,8 +194,8 @@ export function FollowupControl({
       )}
       {error && (
         <p role="alert" className="mt-3 text-sm text-destructive">
-          {error} Your destination is retained; refresh the review if it
-          changed.
+          {error} Your chosen meeting is still selected. Refresh the review if
+          its details have changed.
         </p>
       )}
       {expanded && (
@@ -289,7 +289,7 @@ export function FollowupControl({
                   setError(
                     error instanceof Error
                       ? error.message
-                      : "Could not refresh destination.",
+                      : "Could not reload the selected meeting.",
                   );
                 }
               await destinations.refetch();

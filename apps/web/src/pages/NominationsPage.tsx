@@ -88,8 +88,7 @@ function ContestCard({
       )}
       {contest.ballot_state === "CANCELLED" && (
         <p className="mt-3 supporting-copy">
-          This contest was cancelled before voting. Retained nominations are
-          read-only.
+          This election was cancelled. Nominations can no longer be changed.
         </p>
       )}
       <NominationsPanel
@@ -288,7 +287,7 @@ export function NominationsPage() {
                       ? "Go back to see earlier contests."
                       : approved
                         ? "Browse open contests to nominate someone, or check My nominations."
-                        : "You have no existing candidacy awaiting withdrawal. Withdrawal is only available before voting opens."
+                        : "You have no nominations you can withdraw from. You can only withdraw before voting opens."
                   }
                   action={
                     approved &&

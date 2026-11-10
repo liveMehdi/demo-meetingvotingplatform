@@ -121,7 +121,7 @@ export function RegisterPage() {
                   className={`${inputClass}`}
                 />
                 <p id="password-help" className="supporting-copy">
-                  Use 12–128 characters. A long, unique passphrase works well.
+                  Use at least 12 characters.
                 </p>
               </div>
               {feedback && (

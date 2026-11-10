@@ -44,8 +44,8 @@ export function EligibilityPanel({ meeting }: { meeting: Meeting }) {
         Meeting eligibility
       </h2>
       <p className="mt-3 supporting-copy">
-        Each vote uses the eligible members recorded when it opens. This setting
-        locks after the first vote opens.
+        Eligible voters are fixed when each ballot opens. This setting cannot
+        change after the first ballot opens.
       </p>
       {meeting.eligibility_locked_at || !meetingIsActive(meeting) ? (
         <p className="mt-4 font-medium">

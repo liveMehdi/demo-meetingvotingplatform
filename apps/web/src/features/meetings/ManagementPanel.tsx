@@ -236,7 +236,7 @@ export function MeetingManagement({ meeting }: { meeting: Meeting }) {
     },
     async onError(error) {
       setFeedback(
-        `${error.message} Your input is retained; cancel editing and reopen it to load current details.`,
+        `${error.message} Your entries are still here. To load the latest details, cancel editing and reopen the form.`,
       );
       await refresh();
     },

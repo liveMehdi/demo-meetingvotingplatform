@@ -1,9 +1,6 @@
 import type { Meeting } from "@/features/meetings/api";
 import { ConnectionStatus } from "@/components/ui/ConnectionStatus";
-import {
-  InvalidationControl,
-  InvalidationNotice,
-} from "./InvalidationControl";
+import { InvalidationControl, InvalidationNotice } from "./InvalidationControl";
 import { FollowupControl } from "./FollowupControl";
 import { useCreationAttempt } from "@/lib/use-creation-attempt";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -290,7 +287,7 @@ export function PollsPanel({
     },
     onError(error) {
       setFeedback(
-        `${error.message} Your input is retained. Retry an uncertain creation below. Cancel editing to reload a changed draft.`,
+        `${error.message} Your entries are still here. If you're unsure whether the new poll saved, retry below. If the draft has changed, cancel editing to load the latest version.`,
       );
     },
     async onSettled() {

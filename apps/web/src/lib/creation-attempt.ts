@@ -19,7 +19,7 @@ export class CreationAttempt<T> {
     const encoded = JSON.stringify(input);
     if (this.current && this.current.encoded !== encoded) {
       throw new Error(
-        "Retry the original creation first. Its result is still uncertain.",
+        "We couldn't confirm whether it saved. Retry with your original entries first.",
       );
     }
 
