@@ -60,9 +60,23 @@ function ContestCard({
   return (
     <section className="item-card">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <p className="min-w-0 flex-1 break-words pt-1 supporting-copy">{contest.meeting_title}</p>
-        <StatusBadge tone={contest.ballot_state === "CANCELLED" ? "neutral" : contest.nomination_state === "OPEN" ? "success" : "neutral"}>
-          {contest.ballot_state === "CANCELLED" ? "Cancelled" : contest.nomination_state === "OPEN" ? "Nominations open" : "Nominations closed"}
+        <p className="min-w-0 flex-1 break-words pt-1 supporting-copy">
+          {contest.meeting_title}
+        </p>
+        <StatusBadge
+          tone={
+            contest.ballot_state === "CANCELLED"
+              ? "neutral"
+              : contest.nomination_state === "OPEN"
+                ? "success"
+                : "neutral"
+          }
+        >
+          {contest.ballot_state === "CANCELLED"
+            ? "Cancelled"
+            : contest.nomination_state === "OPEN"
+              ? "Nominations open"
+              : "Nominations closed"}
         </StatusBadge>
       </div>
       <h2 className="item-heading mt-4">{contest.question}</h2>
@@ -128,7 +142,10 @@ function ContestCard({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium" htmlFor={`name-${contest.id}`}>
+                <label
+                  className="block text-sm font-medium"
+                  htmlFor={`name-${contest.id}`}
+                >
                   Proposed candidate name
                 </label>
                 <input
@@ -141,8 +158,8 @@ function ContestCard({
                 />
               </div>
               <p className="supporting-copy">
-                Self-nomination confirms your consent. Other nominees must consent
-                themselves. All candidates need officer approval.
+                Self-nomination confirms your consent. Other nominees must
+                consent themselves. All candidates need officer approval.
               </p>
               <button className="ui-button">
                 {create.isPending ? "Submitting…" : "Submit nomination"}
@@ -191,7 +208,14 @@ export function NominationsPage() {
         Home
       </Link>
       <h1 className="mt-4 page-title">Nominations</h1>
-      <details className="mt-3 supporting-copy"><summary className="w-fit cursor-pointer">About nominations</summary><p className="mt-2">Approved members can nominate themselves or another approved member. You see only nominations you made or received. Candidates may withdraw before voting opens. Eligible members vote from Your ballots.</p></details>
+      <details className="mt-3 supporting-copy">
+        <summary className="w-fit cursor-pointer">About nominations</summary>
+        <p className="mt-2">
+          Approved members can nominate themselves or another approved member.
+          You see only nominations you made or received. Candidates may withdraw
+          before voting opens. Eligible members vote from Your ballots.
+        </p>
+      </details>
       {account.isPending ? (
         <p role="status">Loading account…</p>
       ) : account.isError ? (
@@ -223,13 +247,16 @@ export function NominationsPage() {
               ]}
             />
           )}
-          <div className="list-toolbar"><p className="supporting-copy">Your nomination contests</p><button
-            className="ui-button"
-            disabled={contests.isFetching}
-            onClick={() => void contests.refetch()}
-          >
-            Refresh contests
-          </button></div>
+          <div className="list-toolbar">
+            <p className="supporting-copy">Your nomination contests</p>
+            <button
+              className="ui-button"
+              disabled={contests.isFetching}
+              onClick={() => void contests.refetch()}
+            >
+              Refresh contests
+            </button>
+          </div>
           {contests.isPending ? (
             <p role="status">Loading contests…</p>
           ) : contests.isError ? (
@@ -247,30 +274,57 @@ export function NominationsPage() {
                   />
                 ))}
               </div>
-              {contests.data.items.length === 0 && <EmptyState
-                title={offset > 0 ? "No contests on this page" : approved && view === "consent" ? "No consent requests" : "No nominations to show"}
-                description={offset > 0 ? "Go back to see earlier contests." : approved ? "Browse open contests to nominate someone, or check My nominations." : "You have no existing candidacy awaiting withdrawal. Withdrawal is only available before voting opens."}
-                action={approved && view !== "open" && <button className="ui-button" onClick={() => setView("open")}>Browse open contests</button>} />}
-              {(contests.data.total > 20 || offset > 0) && <nav
-                aria-label="Nomination contest pages"
-                className="pagination"
-              >
-                <button
-                  className="ui-button"
-                  disabled={offset === 0}
-                  onClick={() => setOffset(Math.max(0, offset - 20))}
+              {contests.data.items.length === 0 && (
+                <EmptyState
+                  title={
+                    offset > 0
+                      ? "No contests on this page"
+                      : approved && view === "consent"
+                        ? "No consent requests"
+                        : "No nominations to show"
+                  }
+                  description={
+                    offset > 0
+                      ? "Go back to see earlier contests."
+                      : approved
+                        ? "Browse open contests to nominate someone, or check My nominations."
+                        : "You have no existing candidacy awaiting withdrawal. Withdrawal is only available before voting opens."
+                  }
+                  action={
+                    approved &&
+                    view !== "open" && (
+                      <button
+                        className="ui-button"
+                        onClick={() => setView("open")}
+                      >
+                        Browse open contests
+                      </button>
+                    )
+                  }
+                />
+              )}
+              {(contests.data.total > 20 || offset > 0) && (
+                <nav
+                  aria-label="Nomination contest pages"
+                  className="pagination"
                 >
-                  Previous
-                </button>
-                <span>Page {Math.floor(offset / 20) + 1}</span>
-                <button
-                  className="ui-button"
-                  disabled={offset + 20 >= contests.data.total}
-                  onClick={() => setOffset(offset + 20)}
-                >
-                  Next
-                </button>
-              </nav>}
+                  <button
+                    className="ui-button"
+                    disabled={offset === 0}
+                    onClick={() => setOffset(Math.max(0, offset - 20))}
+                  >
+                    Previous
+                  </button>
+                  <span>Page {Math.floor(offset / 20) + 1}</span>
+                  <button
+                    className="ui-button"
+                    disabled={offset + 20 >= contests.data.total}
+                    onClick={() => setOffset(offset + 20)}
+                  >
+                    Next
+                  </button>
+                </nav>
+              )}
             </>
           )}
         </>

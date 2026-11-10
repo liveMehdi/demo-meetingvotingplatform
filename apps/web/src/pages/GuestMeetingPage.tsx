@@ -27,17 +27,13 @@ export function GuestMeetingPage() {
         </p>
       ) : (
         <>
-          <p className="mt-6 supporting-copy">
-            Joined as a guest
-          </p>
+          <p className="mt-6 supporting-copy">Joined as a guest</p>
           {["ENDED", "CANCELLED"].includes(meeting.data.state) && (
             <p role="status" className="mb-3 text-accent-foreground">
               Meeting {meeting.data.state.toLowerCase()}. Results are read-only.
             </p>
           )}
-          <h1 className="mt-4 page-title">
-            {meeting.data.title}
-          </h1>
+          <h1 className="mt-4 page-title">{meeting.data.title}</h1>
           <p className="mt-4 supporting-copy">
             Scheduled: {new Date(meeting.data.scheduled_at).toLocaleString()}
           </p>

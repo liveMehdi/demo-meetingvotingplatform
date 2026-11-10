@@ -28,14 +28,29 @@ const test = base.extend<{ officerApi: APIRequestContext }>({
 });
 
 test("demo admin signs in and keeps its account access protected", async ({ page }) => {
-  await page.goto("/login");
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", { name: "Explore the demo" })).toBeVisible();
+  await expect(page).toHaveURL("http://127.0.0.1:5174/");
+  await expect(page.getByRole("link", { name: "Sign in to vote" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Join a live poll" })).toBeVisible();
+
+  await page.getByRole("link", { name: "Use demo admin account" }).click();
+
+  await expect(page).toHaveURL("http://127.0.0.1:5174/login");
 
   await page.getByRole("button", { name: "Use demo admin account" }).click();
 
   await expect(page.getByLabel("Email")).toHaveValue("tyrone@example.org");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
 
-  await expect(page).not.toHaveURL(/\/login/);
+  await expect(page).toHaveURL("http://127.0.0.1:5174/");
+  await expect(page.getByRole("heading", { name: "Overview", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Explore the demo" })).toHaveCount(0);
+
+  await page.reload();
+
+  await expect(page.getByRole("heading", { name: "Overview", exact: true })).toBeVisible();
 
   await page.goto("/members?q=tyrone%40example.org");
 

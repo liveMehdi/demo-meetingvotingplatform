@@ -2,7 +2,13 @@ import { inputClass } from "@/components/ui/control-styles";
 import { useMutation } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 import { registerAccount, type RegistrationResult } from "@/features/auth/api";
 
 import { safeReturnTo, loginUrl } from "@/lib/navigation";
@@ -56,7 +62,10 @@ export function RegisterPage() {
             <p role="status" className="leading-7">
               Your account is ready. Membership approval is pending.
             </p>
-            <Link to={signIn} className="mt-4 inline-block text-sm underline underline-offset-4">
+            <Link
+              to={signIn}
+              className="mt-4 inline-block text-sm underline underline-offset-4"
+            >
               Continue to sign in
             </Link>
           </CardContent>
@@ -70,9 +79,15 @@ export function RegisterPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={submit} className="space-y-5" aria-busy={registration.isPending}>
+            <form
+              onSubmit={submit}
+              className="space-y-5"
+              aria-busy={registration.isPending}
+            >
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium">Email</label>
+                <label htmlFor="email" className="block text-sm font-medium">
+                  Email
+                </label>
                 <input
                   id="email"
                   name="email"
@@ -88,7 +103,9 @@ export function RegisterPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium">Password</label>
+                <label htmlFor="password" className="block text-sm font-medium">
+                  Password
+                </label>
                 <input
                   id="password"
                   name="password"
@@ -107,13 +124,19 @@ export function RegisterPage() {
                   Use 12–128 characters. A long, unique passphrase works well.
                 </p>
               </div>
-              {feedback && <p role="alert" className="text-sm text-destructive">{feedback}</p>}
+              {feedback && (
+                <p role="alert" className="text-sm text-destructive">
+                  {feedback}
+                </p>
+              )}
               <button
                 type="submit"
                 disabled={registration.isPending}
                 className="w-full ui-button ui-button-primary"
               >
-                {registration.isPending ? "Creating account…" : "Create account"}
+                {registration.isPending
+                  ? "Creating account…"
+                  : "Create account"}
               </button>
             </form>
           </CardContent>

@@ -127,7 +127,10 @@ function Presentation({
         </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-          <section aria-label="Poll results" className="min-w-0 surface-panel lg:p-8">
+          <section
+            aria-label="Poll results"
+            className="min-w-0 surface-panel lg:p-8"
+          >
             <InvalidationNotice value={poll.data} />
             <p className="mb-3 break-words text-xl text-muted-foreground">
               {poll.data.meeting_title}
@@ -166,7 +169,9 @@ function Presentation({
                 return (
                   <li key={option.id}>
                     <div className="mb-2 flex items-baseline justify-between gap-4 text-lg sm:text-2xl">
-                      <span className="min-w-0 break-words">{option.label}</span>
+                      <span className="min-w-0 break-words">
+                        {option.label}
+                      </span>
                       <span className="shrink-0 font-semibold tabular-nums">
                         {option.count}{" "}
                         <span className="text-lg font-normal text-muted-foreground">
@@ -189,9 +194,12 @@ function Presentation({
                 );
               })}
             </ol>
-            {poll.data.max_selections > 1 && <p className="mt-8 text-base text-muted-foreground">
-              People can select more than one option, so percentages may total over 100%.
-            </p>}
+            {poll.data.max_selections > 1 && (
+              <p className="mt-8 text-base text-muted-foreground">
+                People can select more than one option, so percentages may total
+                over 100%.
+              </p>
+            )}
           </section>
           <aside aria-label="Meeting joining" className="min-w-0 self-start">
             {joining.isPending ? (

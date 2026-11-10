@@ -1,6 +1,6 @@
 # Organisational Voting Platform
 
-A demo version of a platform used for organisational/society-specific voting and polling. After gathering and refining requirements through liasing with society committees, I managed to incorporate meeting management, member elections, motions, nominations, and live guest polls into this full stack application. The demo is hosted on the site.
+A demo version of a platform used for organisational/society-specific voting and polling. After gathering and refining requirements through liasing with society committees, I managed to incorporate meeting management, member elections, motions, nominations, and live guest polls into this full stack application. The demo is hosted on the site and the login page allows you to use the demo admin account.
 
 ## Features
 
